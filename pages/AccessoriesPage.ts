@@ -1,6 +1,7 @@
 import { expect, Locator, Page } from "@playwright/test";
 import ApplicationURL from "../helpers/ApplicationURL";
 import { Product } from "../types/product";
+import { convertPriceToNumber } from "../helpers/utils";
 
 export default class AccessoriesPage {
   private sortSelector: Locator;
@@ -9,7 +10,7 @@ export default class AccessoriesPage {
     this.sortSelector = this.page.locator('[class="orderby"]');
   }
 
-  public async sortProducts() {
+  public async sortProductsLowToHigh() {
     await this.sortSelector.selectOption("price");
     await this.page.goto(`${ApplicationURL.ACCESSORIES_URL}/?orderby=price`);
   }
@@ -28,11 +29,7 @@ export default class AccessoriesPage {
         .last();
       const priceInString = await priceLocator.textContent();
 
-      //Convert the price from string to Number
-      const parts = priceInString?.split(" ");
-      const numericPart = parts ? parts[0] : "0";
-      const lastPrice = parseFloat(numericPart);
-
+      const lastPrice = convertPriceToNumber(priceInString);
       products.push({ name: name || "", price: lastPrice });
     }
 
@@ -40,7 +37,7 @@ export default class AccessoriesPage {
   }
 
   public async verifySorting(expectedProducts: Product[]) {
-    await this.sortProducts();
+    await this.sortProductsLowToHigh();
     // Wait till last product is loaded again
     await this.page
       .locator("li.product")
