@@ -1,12 +1,20 @@
 import { test, expect } from "@playwright/test";
+import ApplicationURL from "../helpers/ApplicationURL";
+import AccessoriesPage from "../pages/AccessoriesPage";
 
-test("test", async ({ page }) => {
-  await page.goto("https://atid.store/");
+test("Validate shopping flow", async ({ page }) => {
+  const accessoriesPage = new AccessoriesPage(page);
+
+  await page.goto(ApplicationURL.BASE_URL);
   await page.getByRole("link", { name: "Accessories", exact: true }).click();
-  await page.getByLabel("Shop order").selectOption("price");
-  await page.goto(
-    "https://atid.store/product-category/accessories/?orderby=price"
-  );
+
+  // Wait for no more network requests
+  await page.waitForLoadState("networkidle");
+
+  const productSortLowToHigh = await accessoriesPage.getAllProducts();
+  productSortLowToHigh.sort((a, b) => a.price - b.price);
+  await accessoriesPage.verifySorting(productSortLowToHigh);
+
   await page
     .locator("#main")
     .getByRole("link", { name: "Buddha Bracelet" })
