@@ -3,6 +3,7 @@ import ProductDetailsPage from "../pages/ProductDetailsPage";
 import ApplicationURL from "../helpers/ApplicationURL";
 import AccessoriesPage from "../pages/AccessoriesPage";
 import CartPage from "../pages/CartPage";
+import CheckoutPage from "../pages/CheckoutPage";
 
 test("Validate shopping flow", async ({ page }) => {
   await page.goto(ApplicationURL.BASE_URL);
@@ -29,4 +30,24 @@ test("Validate shopping flow", async ({ page }) => {
   await page.getByRole("link", { name: "View cart" }).click();
   const cartPage = new CartPage(page);
   await cartPage.verifyProductInCart(productName, productPrice);
+
+  await page.getByLabel("Registered Mail (5 - 8 days)").check();
+  const methodLocator = page.locator(
+    'label:has-text("Registered Mail (5 - 8 days)")'
+  );
+  await cartPage.validateSubtotalUpdate(methodLocator);
+  await page.getByRole("link", { name: "Proceed to checkout" }).click();
+
+  const checkoutPage = new CheckoutPage(page);
+  await checkoutPage.fillMandatoryFields(
+    "Maayan",
+    "Alt",
+    "Israel",
+    "Dov 13",
+    "7876543",
+    "Ashkelon",
+    "052-7863423",
+    "test@gmail.com"
+  );
+  await checkoutPage.placeOrder();
 });
