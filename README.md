@@ -19,16 +19,29 @@ The main objective is to validate user interactions such as navigation, sorting,
 ## 📝Project Structure
 
 ecommerce-automation/
+
 ├── tests/ # Automated test scripts
+
 │ ├── sanity.spec.ts # All test
+
 ├── pages/ # Page Object Model implementations
+
 │ ├── AccessoriesPage.ts # Accessories page object
+
 │ ├── CartPage.ts # Cart page object
+
 │ ├── CheckoutPage.ts # Checkout page object
+
 │ ├── ProductDetailsPage.ts # Product Details page object
+
 ├── helpers/ # Helpers files
+
 │ ├── ApplicationURL.ts # Variables for URLs
+
 │ ├── utils.ts # Utility functions
+
 ├── types/ # TypeScript types
+
 │ ├── product.ts # Interface for Product
+
 ├── README.md # Documentation
